@@ -3,105 +3,340 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "project": {
+    "zappix-customer": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "",
-      "sourceRoot": "src",
+      "root": "projects/zappix-customer",
+      "sourceRoot": "projects/zappix-customer/src",
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
-            "outputPath": "dist/project",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.app.json",
+            "customWebpackConfig": {
+              "path": "projects/zappix-customer/custom-webpack.config.js"
+            },
+            "allowedCommonJsDependencies": [
+              "quill",
+              "fast-deep-equal"
+            ],
+            "outputPath": "dist/zappix-customer",
+            "index": "projects/zappix-customer/src/index.html",
+            "main": "projects/zappix-customer/src/main.ts",
+            "polyfills": "projects/zappix-customer/src/polyfills.ts",
+            "tsConfig": "projects/zappix-customer/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "projects/zappix-customer/src/favicon.ico",
+              "projects/zappix-customer/src/assets",
+              "projects/zappix-customer/src/manifest.webmanifest",
+              "projects/zappix-customer/src/web.config",
+              {
+                "glob": "**/*",
+                "input": "node_modules/ngx-extended-pdf-viewer/bleeding-edge/",
+                "output": "/bleeding-edge/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/ngx-extended-pdf-viewer/assets/",
+                "output": "/assets/"
+              }
             ],
             "styles": [
-              "src/styles.scss"
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "./node_modules/primeicons/primeicons.css",
+              "./node_modules/primeng/resources/themes/lara-light-blue/theme.css",
+              "./node_modules/primeng/resources/primeng.min.css",
+              "./node_modules/primeflex/primeflex.css",
+              "./node_modules/ngx-toastr/toastr.css",
+              "projects/zappix-customer/src/styles.scss",
+              "node_modules/intl-tel-input/build/css/intlTelInput.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/intl-tel-input/build/js/intlTelInput.min.js",
+              "node_modules/intl-tel-input/build/js/utils.js"
+            ]
           },
           "configurations": {
             "production": {
+              "buildOptimizer": true,
+              "optimization": true,
+              "outputHashing": "all",
+              "vendorChunk": false,
+              "extractLicenses": false,
+              "sourceMap": false,
+              "namedChunks": false,
               "budgets": [
                 {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "type": "initial"
                 },
                 {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "type": "anyComponentStyle"
                 }
               ],
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "projects/zappix-customer/src/environments/environment.ts",
+                  "with": "projects/zappix-customer/src/environments/production/environment.prod.ts"
+                }
+              ]
+            },
+            "qa": {
+              "buildOptimizer": true,
+              "optimization": true,
+              "outputHashing": "all",
+              "vendorChunk": false,
+              "extractLicenses": false,
+              "sourceMap": false,
+              "namedChunks": false,
+              "budgets": [
+                {
+                  "type": "initial"
+                },
+                {
+                  "type": "anyComponentStyle"
                 }
               ],
-              "outputHashing": "all"
+              "fileReplacements": [
+                {
+                  "replace": "projects/zappix-customer/src/environments/environment.ts",
+                  "with": "projects/zappix-customer/src/environments/qa/environment.qa.ts"
+                }
+              ]
             },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
+              "vendorChunk": false,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": false
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular-builders/custom-webpack:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "project:build:production"
+              "browserTarget": "zappix-customer:build:production"
+            },
+            "qa": {
+              "browserTarget": "zappix-customer:build:qa"
             },
             "development": {
-              "browserTarget": "project:build:development"
+              "browserTarget": "zappix-customer:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "@angular-devkit/custom-webpack:extract-i18n",
           "options": {
-            "browserTarget": "project:build"
+            "browserTarget": "zappix-customer:build"
           }
+        },
+        "test": {
+          "builder": "@angular-devkit/custom-webpack:karma",
+          "options": {
+            "main": "projects/zappix-customer/src/test.ts",
+            "polyfills": "projects/zappix-customer/src/polyfills.ts",
+            "tsConfig": "projects/zappix-customer/tsconfig.spec.json",
+            "karmaConfig": "projects/zappix-customer/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/zappix-customer/src/favicon.ico",
+              "projects/zappix-customer/src/assets",
+              "projects/zappix-customer/src/manifest.webmanifest",
+              "projects/zappix-customer/src/web.config"
+            ],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "projects/zappix-customer/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/zappix-customer/**/*.ts",
+              "projects/zappix-customer/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "@zappix/components": {
+      "projectType": "library",
+      "root": "projects/zappix/components",
+      "sourceRoot": "projects/zappix/components/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/zappix/components/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/zappix/components/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/zappix/components/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "scripts": []
+            "main": "projects/zappix/components/src/test.ts",
+            "tsConfig": "projects/zappix/components/tsconfig.spec.json",
+            "karmaConfig": "projects/zappix/components/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/zappix/components/**/*.ts",
+              "projects/zappix/components/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "@zappix/services": {
+      "projectType": "library",
+      "root": "projects/zappix/services",
+      "sourceRoot": "projects/zappix/services/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/zappix/services/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/zappix/services/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/zappix/services/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/zappix/services/src/test.ts",
+            "tsConfig": "projects/zappix/services/tsconfig.spec.json",
+            "karmaConfig": "projects/zappix/services/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/zappix/services/**/*.ts",
+              "projects/zappix/services/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "@zappix/domain": {
+      "projectType": "library",
+      "root": "projects/zappix/domain",
+      "sourceRoot": "projects/zappix/domain/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/zappix/domain/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/zappix/domain/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/zappix/domain/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/zappix/domain/src/test.ts",
+            "tsConfig": "projects/zappix/domain/tsconfig.spec.json",
+            "karmaConfig": "projects/zappix/domain/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/zappix/domain/**/*.ts",
+              "projects/zappix/domain/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "@zappix/ngx-intl-tel-input": {
+      "projectType": "library",
+      "root": "projects/zappix/ngx-intl-tel-input",
+      "sourceRoot": "projects/zappix/ngx-intl-tel-input/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/zappix/ngx-intl-tel-input/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/zappix/ngx-intl-tel-input/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/zappix/ngx-intl-tel-input/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/zappix/ngx-intl-tel-input/src/test.ts",
+            "tsConfig": "projects/zappix/ngx-intl-tel-input/tsconfig.spec.json",
+            "karmaConfig": "projects/zappix/ngx-intl-tel-input/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/zappix/ngx-intl-tel-input/**/*.ts",
+              "projects/zappix/ngx-intl-tel-input/**/*.html"
+            ]
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "9a3beeed-105e-4c86-8814-0f16963cf58a",
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }
